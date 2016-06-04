@@ -16,15 +16,11 @@ defmodule ListOps do
   def map(l, f), do: MyMap.map(l, f)
 
   @spec filter(list, (any -> as_boolean(term))) :: list
-  def filter(l, f) do
-
-  end
+  def filter(l, f), do: MyFilter.filter(l, f)
 
   @type acc :: any
   @spec reduce(list, acc, ((any, acc) -> acc)) :: acc
-  def reduce(l, acc, f) do
-
-  end
+  def reduce(l, acc, f), do: MyReduce.reduce(l, acc, f)
 
   @spec append(list, list) :: list
   def append(a, b) do
@@ -37,11 +33,32 @@ defmodule ListOps do
   end
 end
 
+defmodule MyReduce do
+  def reduce([], acc, _), do: acc
+  def reduce([h | t], acc, fun), do: reduce(t, apply_reduce(h, fun, acc), fun)
+
+  def apply_reduce(val, fun, acc), do: acc |> fun.(val)
+end
+
+defmodule MyFilter do
+  def filter([], _),              do: []
+  def filter(list, fun),          do: filter(list, fun, [])
+  def filter([h | t], fun, list), do: filter(t, fun, apply_filter(h, fun, list))
+  def filter([], _, list),        do: MyReverse.reverse(list)
+
+  def apply_filter(val, fun, list) do
+    case fun.(val) do
+      true -> [val | list]
+      _    -> list
+    end
+  end
+end
+
 defmodule MyMap do
-  def map([], _), do: []
-  def map(list, fun), do: map(list, fun, [])
+  def map([], _),              do: []
+  def map(list, fun),          do: map(list, fun, [])
   def map([h | t], fun, list), do: map(t, fun, [fun.(h) | list])
-  def map([], _, list), do: MyReverse.reverse(list)
+  def map([], _, list),        do: MyReverse.reverse(list)
 end
 
 defmodule MyReverse do
