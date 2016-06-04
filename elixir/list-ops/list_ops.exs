@@ -23,21 +23,28 @@ defmodule ListOps do
   def reduce(l, acc, f), do: MyReduce.reduce(l, acc, f)
 
   @spec append(list, list) :: list
-  def append(a, b) do
-
-  end
+  def append(a, b), do: MyAppend.append(a, b, [])
 
   @spec concat([[any]]) :: [any]
-  def concat(ll) do
+  def concat(ll), do: MyConcat.concat(ll)
+end
 
-  end
+defmodule MyConcat do
+  def concat([]), do: []
+end
+
+defmodule MyAppend do
+  def append([], [], list),           do: MyReverse.reverse(list)
+  def append([h | t], list_b, list),  do: append(t, list_b, [h | list])
+  def append([], [h | t], list),      do: append([], t, [h | list])
 end
 
 defmodule MyReduce do
-  def reduce([], acc, _), do: acc
+  def reduce([], acc, _),        do: acc
   def reduce([h | t], acc, fun), do: reduce(t, apply_reduce(h, fun, acc), fun)
 
-  def apply_reduce(val, fun, acc), do: acc |> fun.(val)
+  # not very happy about this. should it use currying?
+  def apply_reduce(val, fun, acc), do: fun.(val, acc)
 end
 
 defmodule MyFilter do
