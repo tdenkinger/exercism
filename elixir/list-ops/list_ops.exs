@@ -26,29 +26,20 @@ defmodule ListOps do
   def append(a, b), do: MyAppend.append(a, b, [])
 
   @spec concat([[any]]) :: [any]
-  def concat(ll), do: MyConcat.concat(ll)
+  def concat(ll), do: MyConcat.concat(ll, [])
 end
 
 defmodule MyConcat do
-  def concat(ll), do: concat(ll, [])
-  def concat([], []), do: []
-  def concat([], list), do: MyReverse.reverse(list)
+  def concat([], list),      do: MyReverse.reverse(list)
+  def concat([h | t], list), do: concat(t, subconcat(h, list))
 
-  def concat([h | t], list) do
-    concat(t, subconcat(h, list))
-  end
-
-  def subconcat([], list), do: list
-  def subconcat([h | t], list) do
-    subconcat(t, [h | list])
-  end
+  defp subconcat([], list),      do: list
+  defp subconcat([h | t], list), do: subconcat(t, [h | list])
 end
 
 defmodule MyAppend do
   def append([], [], list),           do: MyReverse.reverse(list)
-  def append([h | t], list_b, list) do
-    append(t, list_b, [h | list])
-  end
+  def append([h | t], list_b, list),  do: append(t, list_b, [h | list])
   def append([], [h | t], list),      do: append([], t, [h | list])
 end
 
@@ -61,7 +52,6 @@ defmodule MyReduce do
 end
 
 defmodule MyFilter do
-  def filter([], _),              do: []
   def filter(list, fun),          do: filter(list, fun, [])
   def filter([h | t], fun, list), do: filter(t, fun, apply_filter(h, fun, list))
   def filter([], _, list),        do: MyReverse.reverse(list)
@@ -75,14 +65,12 @@ defmodule MyFilter do
 end
 
 defmodule MyMap do
-  def map([], _),              do: []
   def map(list, fun),          do: map(list, fun, [])
   def map([h | t], fun, list), do: map(t, fun, [fun.(h) | list])
   def map([], _, list),        do: MyReverse.reverse(list)
 end
 
 defmodule MyReverse do
-  def reverse([]),            do: []
   def reverse(list),          do: reverse(list, [])
   def reverse([h | t], list), do: reverse(t, [h | list])
   def reverse([], list),      do: list
