@@ -47,7 +47,6 @@ defmodule MyReduce do
   def reduce([], acc, _),        do: acc
   def reduce([h | t], acc, fun), do: reduce(t, apply_reduce(h, fun, acc), fun)
 
-  # not very happy about this. should it use currying?
   def apply_reduce(val, fun, acc), do: fun.(val, acc)
 end
 
