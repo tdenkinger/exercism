@@ -30,12 +30,25 @@ defmodule ListOps do
 end
 
 defmodule MyConcat do
-  def concat([]), do: []
+  def concat(ll), do: concat(ll, [])
+  def concat([], []), do: []
+  def concat([], list), do: MyReverse.reverse(list)
+
+  def concat([h | t], list) do
+    concat(t, subconcat(h, list))
+  end
+
+  def subconcat([], list), do: list
+  def subconcat([h | t], list) do
+    subconcat(t, [h | list])
+  end
 end
 
 defmodule MyAppend do
   def append([], [], list),           do: MyReverse.reverse(list)
-  def append([h | t], list_b, list),  do: append(t, list_b, [h | list])
+  def append([h | t], list_b, list) do
+    append(t, list_b, [h | list])
+  end
   def append([], [h | t], list),      do: append([], t, [h | list])
 end
 
@@ -77,5 +90,5 @@ end
 
 defmodule MyCount do
   def count([], acc),      do: acc
-  def count([h | t], acc), do: count(t, acc + 1)
+  def count([_ | t], acc), do: count(t, acc + 1)
 end
